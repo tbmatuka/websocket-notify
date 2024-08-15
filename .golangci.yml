@@ -1,7 +1,8 @@
 ---
 linters-settings:
   govet:
-    check-shadowing: true
+    enable:
+      - shadow
   gocyclo:
     min-complexity: 42
   cyclop:
@@ -11,40 +12,46 @@ linters-settings:
   goconst:
     min-len: 2
     min-occurrences: 3
+  tagliatelle:
+    case:
+      rules:
+        json: snake
+        yaml: snake
   depguard:
     rules:
       main:
         allow:
           - $gostd
           - github.com/tbmatuka/websocket-notify
+          - github.com/gorilla/websocket
           - github.com/spf13/cobra
           - golang.org/x/crypto
           - gopkg.in/yaml.v3
   gci:
-    local-prefixes: github.com/tbmatuka/websocket-notify
+    sections:
+      - standard
+      - default
+      - prefix(github.com/tbmatuka/websocket-notify)
+    custom-order: true
 
 linters:
   enable-all: true
   disable:
-    - golint  # deprecated, replaced with revive
-    - interfacer  # deprecated
-    - maligned  # deprecated
+    - revive
+    - stylecheck
     - wrapcheck
     - nlreturn
     - gomnd
-    - goerr113
-    - exhaustivestruct
+    - mnd
     - wsl
     - whitespace
     - lll
-    - scopelint
     - nestif
     - funlen
     - paralleltest
     - godot
     - varnamelen
     - ireturn
-    - ifshort
     - thelper
     - wastedassign
     - goconst
@@ -54,17 +61,10 @@ linters:
     - interfacebloat
     - dupword
     - forcetypeassert  # tmp needs to be on
-    - ifshort  # deprecated
-    - structcheck  # deprecated
-    - deadcode  # deprecated
-    - nosnakecase  # deprecated
-    - varcheck  # deprecated
     - rowserrcheck  # deprecated
     - sqlclosecheck  # deprecated
     - wastedassign  # deprecated
-    - golint  # deprecated
-    - interfacer  # deprecated
-    - maligned  # deprecated
+    - execinquery # deprecated
 
 issues:
   exclude-dirs:

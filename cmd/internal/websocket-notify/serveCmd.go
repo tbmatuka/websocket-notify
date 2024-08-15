@@ -2,12 +2,13 @@ package websocket_notify
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"log"
 	"net"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 func getServeCmd() *cobra.Command {
@@ -67,7 +68,7 @@ func runServeCmd(cmd *cobra.Command, _ []string) {
 
 		server.Handler = http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
 			if request.URL.Path == `/ws` {
-				handleWebsocketRequest(responseWriter, request, config)
+				handleWebsocketRequest(responseWriter, request)
 			}
 		})
 

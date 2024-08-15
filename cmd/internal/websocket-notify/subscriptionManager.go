@@ -5,11 +5,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"golang.org/x/crypto/pbkdf2"
-	"log"
 	"strings"
 	"sync"
+
+	"golang.org/x/crypto/pbkdf2"
 )
 
 type SubscriptionManager struct {
@@ -43,6 +42,8 @@ func getSubscriptionManager() *SubscriptionManager {
 	return subscriptionManager
 }
 
+var errInvalidSignature = errors.New(`invalid signature`)
+
 func (manager *SubscriptionManager) Subscribe(connection *SocketConnection, tags []string, signature string) error {
 	if len(manager.secret) != 0 {
 		correctSignature := hex.EncodeToString(
@@ -56,9 +57,7 @@ func (manager *SubscriptionManager) Subscribe(connection *SocketConnection, tags
 		)
 
 		if signature != correctSignature {
-			log.Println(fmt.Sprintf(`correct signature: %s`, correctSignature))
-
-			return errors.New(`invalid signature`)
+			return errInvalidSignature
 		}
 	}
 
@@ -76,18 +75,24 @@ func (manager *SubscriptionManager) Unsubscribe(connection *SocketConnection, ta
 }
 
 func (manager *SubscriptionManager) CloseConnection(connection *SocketConnection) {
-	var tags []string
+	if len(connection.Tags) > 0 {
+		tags := make([]string, 0, len(connection.Tags))
 
-	for tagName, _ := range connection.Tags {
-		tags = append(tags, tagName)
+		for tagName := range connection.Tags {
+			tags = append(tags, tagName)
+		}
+
+		manager.unsubscribeFromTags(connection, tags)
 	}
 
-	manager.unsubscribeFromTags(connection, tags)
 	manager.removeConnection(connection)
 }
 
 func (manager *SubscriptionManager) DistributeEvent(event Event) {
-	eventString, _ := json.Marshal(event)
+	eventString, err := json.Marshal(event)
+	if err != nil {
+		return
+	}
 
 	for _, tagName := range event.Tags {
 		for _, connection := range manager.tags[tagName] {

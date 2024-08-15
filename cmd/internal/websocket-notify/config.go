@@ -1,12 +1,12 @@
 package websocket_notify
 
 import (
-	"fmt"
-	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
@@ -88,7 +88,7 @@ func loadConfig(cmd *cobra.Command) Config {
 func getValue(cmd *cobra.Command, cmdFlag string, envName string, yamlValue string) string {
 	value := yamlValue
 
-	envValue, envOk := os.LookupEnv(fmt.Sprintf(`WEBSOCKET_NOTIFY_%s`, envName))
+	envValue, envOk := os.LookupEnv(`WEBSOCKET_NOTIFY_` + envName)
 	if envOk {
 		value = envValue
 	}
@@ -103,12 +103,11 @@ func getValue(cmd *cobra.Command, cmdFlag string, envName string, yamlValue stri
 func getValueInt(cmd *cobra.Command, cmdFlag string, envName string, yamlValue uint16) uint16 {
 	value := yamlValue
 
-	envValue, envOk := os.LookupEnv(fmt.Sprintf(`WEBSOCKET_NOTIFY_%s`, envName))
+	envValue, envOk := os.LookupEnv(`WEBSOCKET_NOTIFY_` + envName)
 	if envOk {
 		intValue, err := strconv.ParseUint(envValue, 10, 16)
-
 		if err != nil {
-			log.Fatalln(fmt.Sprintf(`Environment variable %s is not a number.`, envName))
+			log.Fatalf("Environment variable %s is not a number.\n", envName)
 		}
 
 		value = uint16(intValue)

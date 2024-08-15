@@ -43,23 +43,23 @@ func handleEventRequest(responseWriter http.ResponseWriter, request *http.Reques
 
 		switch {
 		case errors.As(err, &syntaxError):
-			msg := fmt.Sprintf("Request body contains badly-formed JSON (at position %d)", syntaxError.Offset)
+			msg := fmt.Sprintf(`Request body contains badly-formed JSON (at position %d)`, syntaxError.Offset)
 			http.Error(responseWriter, msg, http.StatusBadRequest)
 		case errors.Is(err, io.ErrUnexpectedEOF):
-			msg := fmt.Sprintf("Request body contains badly-formed JSON")
+			msg := `Request body contains badly-formed JSON`
 			http.Error(responseWriter, msg, http.StatusBadRequest)
 		case errors.As(err, &unmarshalTypeError):
-			msg := fmt.Sprintf("Request body contains an invalid value for the %q field (at position %d)", unmarshalTypeError.Field, unmarshalTypeError.Offset)
+			msg := fmt.Sprintf(`Request body contains an invalid value for the %q field (at position %d)`, unmarshalTypeError.Field, unmarshalTypeError.Offset)
 			http.Error(responseWriter, msg, http.StatusBadRequest)
-		case strings.HasPrefix(err.Error(), "json: unknown field "):
-			fieldName := strings.TrimPrefix(err.Error(), "json: unknown field ")
-			msg := fmt.Sprintf("Request body contains unknown field %s", fieldName)
+		case strings.HasPrefix(err.Error(), `json: unknown field `):
+			fieldName := strings.TrimPrefix(err.Error(), `json: unknown field `)
+			msg := `Request body contains unknown field ` + fieldName
 			http.Error(responseWriter, msg, http.StatusBadRequest)
 		case errors.Is(err, io.EOF):
-			msg := "Request body must not be empty"
+			msg := `Request body must not be empty`
 			http.Error(responseWriter, msg, http.StatusBadRequest)
-		case err.Error() == "http: request body too large":
-			msg := "Request body must not be larger than 1MB"
+		case err.Error() == `http: request body too large`:
+			msg := `Request body must not be larger than 1MB`
 			http.Error(responseWriter, msg, http.StatusRequestEntityTooLarge)
 		default:
 			log.Print(err.Error())
@@ -104,5 +104,5 @@ func handleStatusRequest(responseWriter http.ResponseWriter, request *http.Reque
 
 	responseWriter.WriteHeader(http.StatusOK)
 	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.Write(response)
+	_, _ = responseWriter.Write(response)
 }
