@@ -1,0 +1,14 @@
+api_secret: ''
+websocket_secret: ''
+
+api:
+    host: 0.0.0.0
+    port: 8000
+    ssl_cert: path/to/ssl.crt
+    ssl_key: path/to/ssl.key
+
+websocket:
+    host: 0.0.0.0
+    port: 8001
+    ssl_cert: path/to/ssl.crt
+    ssl_key: path/to/ssl.key

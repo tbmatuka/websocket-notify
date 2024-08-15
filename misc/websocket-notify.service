@@ -1,0 +1,8 @@
+[Unit]
+Description=websocket-notify
+
+[Service]
+ExecStart=/usr/local/bin/websocket-notify
+
+[Install]
+WantedBy=default.target

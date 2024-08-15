@@ -1,0 +1,73 @@
+---
+linters-settings:
+  govet:
+    check-shadowing: true
+  gocyclo:
+    min-complexity: 42
+  cyclop:
+    max-complexity: 42
+  dupl:
+    threshold: 200
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+  depguard:
+    rules:
+      main:
+        allow:
+          - $gostd
+          - github.com/tbmatuka/websocket-notify
+          - github.com/spf13/cobra
+          - golang.org/x/crypto
+          - gopkg.in/yaml.v3
+  gci:
+    local-prefixes: github.com/tbmatuka/websocket-notify
+
+linters:
+  enable-all: true
+  disable:
+    - golint  # deprecated, replaced with revive
+    - interfacer  # deprecated
+    - maligned  # deprecated
+    - wrapcheck
+    - nlreturn
+    - gomnd
+    - goerr113
+    - exhaustivestruct
+    - wsl
+    - whitespace
+    - lll
+    - scopelint
+    - nestif
+    - funlen
+    - paralleltest
+    - godot
+    - varnamelen
+    - ireturn
+    - ifshort
+    - thelper
+    - wastedassign
+    - goconst
+    - gci
+    - exhaustruct
+    - nonamedreturns
+    - interfacebloat
+    - dupword
+    - forcetypeassert  # tmp needs to be on
+    - ifshort  # deprecated
+    - structcheck  # deprecated
+    - deadcode  # deprecated
+    - nosnakecase  # deprecated
+    - varcheck  # deprecated
+    - rowserrcheck  # deprecated
+    - sqlclosecheck  # deprecated
+    - wastedassign  # deprecated
+    - golint  # deprecated
+    - interfacer  # deprecated
+    - maligned  # deprecated
+
+issues:
+  exclude-dirs:
+    - test
+  exclude-files:
+    - ".*_test\\.go$"
