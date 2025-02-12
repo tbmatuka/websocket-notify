@@ -75,10 +75,10 @@ func loadConfig(cmd *cobra.Command) Config {
 	config.ApiListen.SSLCert = getValue(cmd, `api-ssl-cert`, `API_SSL_CERT`, yamlConfig.ApiListen.SSLCert)
 	config.ApiListen.SSLKey = getValue(cmd, `api-ssl-key`, `API_SSL_KEY`, yamlConfig.ApiListen.SSLKey)
 
-	config.WsListen.Host = getValue(cmd, `ws-host`, `API_HOST`, yamlConfig.WsListen.Host)
-	config.WsListen.Port = getValueInt(cmd, `ws-port`, `API_PORT`, yamlConfig.WsListen.Port)
-	config.WsListen.SSLCert = getValue(cmd, `ws-ssl-cert`, `API_SSL_CERT`, yamlConfig.WsListen.SSLCert)
-	config.WsListen.SSLKey = getValue(cmd, `ws-ssl-key`, `API_SSL_KEY`, yamlConfig.WsListen.SSLKey)
+	config.WsListen.Host = getValue(cmd, `ws-host`, `WS_HOST`, yamlConfig.WsListen.Host)
+	config.WsListen.Port = getValueInt(cmd, `ws-port`, `WS_PORT`, yamlConfig.WsListen.Port)
+	config.WsListen.SSLCert = getValue(cmd, `ws-ssl-cert`, `WS_SSL_CERT`, yamlConfig.WsListen.SSLCert)
+	config.WsListen.SSLKey = getValue(cmd, `ws-ssl-key`, `WS_SSL_KEY`, yamlConfig.WsListen.SSLKey)
 
 	config.CheckSSL()
 
