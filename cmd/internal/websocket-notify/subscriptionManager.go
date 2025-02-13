@@ -48,7 +48,7 @@ func (manager *SubscriptionManager) Subscribe(connection *SocketConnection, tags
 	if len(manager.secret) != 0 {
 		correctSignature := hex.EncodeToString(
 			pbkdf2.Key(
-				[]byte(strings.Join(tags, `-`)),
+				[]byte(strings.Join(tags, `|`)),
 				manager.secret,
 				10,
 				16,

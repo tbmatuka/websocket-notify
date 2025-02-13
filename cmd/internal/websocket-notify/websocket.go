@@ -2,6 +2,7 @@ package websocket_notify
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/websocket"
 )
@@ -47,10 +48,15 @@ func handleWebsocketRequest(responseWriter http.ResponseWriter, request *http.Re
 			return
 		}
 
+		cleanTags := make([]string, len(msg.Tags))
+		for i, tag := range msg.Tags {
+			cleanTags[i] = strings.ReplaceAll(tag, `|`, ``)
+		}
+
 		if msg.Unsubscribe {
-			manager.Unsubscribe(&socketConnection, msg.Tags)
+			manager.Unsubscribe(&socketConnection, cleanTags)
 		} else {
-			err := manager.Subscribe(&socketConnection, msg.Tags, msg.Signature)
+			err := manager.Subscribe(&socketConnection, cleanTags, msg.Signature)
 			if err != nil {
 				socketConnection.Close()
 
