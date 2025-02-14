@@ -21,7 +21,9 @@ type WebsocketMessage struct {
 	Unsubscribe bool     `json:"unsubscribe"`
 }
 
-var upgrader = websocket.Upgrader{} //nolint:gochecknoglobals
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool { return true },
+} //nolint:gochecknoglobals
 
 func handleWebsocketRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	conn, err := upgrader.Upgrade(responseWriter, request, nil)
