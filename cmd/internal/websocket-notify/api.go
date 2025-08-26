@@ -69,6 +69,8 @@ func handleEventRequest(responseWriter http.ResponseWriter, request *http.Reques
 		return
 	}
 
+	logger.Debug(fmt.Sprintf(`API event: %s -> %s`, event.Name, strings.Join(event.Tags, `, `)))
+
 	manager := getSubscriptionManager()
 	manager.DistributeEvent(event)
 }

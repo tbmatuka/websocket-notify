@@ -24,6 +24,10 @@ func getServeCmd() *cobra.Command {
 func runServeCmd(cmd *cobra.Command, _ []string) {
 	config := loadConfig(cmd)
 
+	getLogger()
+	logger.SetDebug(config.Debug)
+	logger.Debug(`Debug enabled`)
+
 	manager := getSubscriptionManager()
 	manager.secret = []byte(config.WsSecret)
 
@@ -50,13 +54,16 @@ func runServeCmd(cmd *cobra.Command, _ []string) {
 		log.Println(`API Listening on: `, server.Addr)
 
 		if config.ApiListen.SSL {
+			logger.Debug(`API SSL enabled`)
 			log.Fatal(server.ListenAndServeTLS(config.ApiListen.SSLCert, config.ApiListen.SSLKey))
 		} else { //nolint:revive
+			logger.Debug(`API SSL disabled`)
 			log.Fatal(server.ListenAndServe())
 		}
 
 		waitGroup.Done()
 	}()
+
 	waitGroup.Add(1)
 	go func() {
 		host := getListenAddress(config.WsListen.Host)
@@ -75,13 +82,16 @@ func runServeCmd(cmd *cobra.Command, _ []string) {
 		log.Println(`Websocket Listening on: `, server.Addr)
 
 		if config.WsListen.SSL {
+			logger.Debug(`Websocket SSL enabled`)
 			log.Fatal(server.ListenAndServeTLS(config.WsListen.SSLCert, config.WsListen.SSLKey))
 		} else { //nolint:revive
+			logger.Debug(`Websocket SSL disabled`)
 			log.Fatal(server.ListenAndServe())
 		}
 
 		waitGroup.Done()
 	}()
+
 	waitGroup.Wait()
 }
 

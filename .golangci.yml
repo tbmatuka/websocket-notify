@@ -1,73 +1,89 @@
----
-linters-settings:
-  govet:
-    enable:
-      - shadow
-  gocyclo:
-    min-complexity: 42
-  cyclop:
-    max-complexity: 42
-  dupl:
-    threshold: 200
-  goconst:
-    min-len: 2
-    min-occurrences: 3
-  tagliatelle:
-    case:
-      rules:
-        json: snake
-        yaml: snake
-  depguard:
-    rules:
-      main:
-        allow:
-          - $gostd
-          - github.com/tbmatuka/websocket-notify
-          - github.com/gorilla/websocket
-          - github.com/spf13/cobra
-          - golang.org/x/crypto
-          - gopkg.in/yaml.v3
-  gci:
-    sections:
-      - standard
-      - default
-      - prefix(github.com/tbmatuka/websocket-notify)
-    custom-order: true
-
+version: "2"
 linters:
-  enable-all: true
+  default: all
   disable:
-    - revive
-    - stylecheck
-    - wrapcheck
-    - nlreturn
-    - gomnd
-    - mnd
-    - wsl
-    - whitespace
-    - lll
-    - nestif
-    - funlen
-    - paralleltest
-    - godot
-    - varnamelen
-    - ireturn
-    - thelper
-    - wastedassign
-    - goconst
-    - gci
-    - exhaustruct
-    - nonamedreturns
-    - interfacebloat
     - dupword
-    - forcetypeassert  # tmp needs to be on
-    - rowserrcheck  # deprecated
-    - sqlclosecheck  # deprecated
-    - wastedassign  # deprecated
-    - execinquery # deprecated
-
-issues:
-  exclude-dirs:
-    - test
-  exclude-files:
-    - ".*_test\\.go$"
+    - exhaustruct
+    - forcetypeassert
+    - funlen
+    - goconst
+    - godot
+    - interfacebloat
+    - ireturn
+    - lll
+    - mnd
+    - nestif
+    - nlreturn
+    - nonamedreturns
+    - paralleltest
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - thelper
+    - varnamelen
+    - wastedassign
+    - whitespace
+    - wrapcheck
+    - wsl
+    - wsl_v5
+  settings:
+    cyclop:
+      max-complexity: 42
+    depguard:
+      rules:
+        main:
+          allow:
+            - $gostd
+            - github.com/tbmatuka/websocket-notify
+            - github.com/gorilla/websocket
+            - github.com/spf13/cobra
+            - golang.org/x/crypto
+            - gopkg.in/yaml.v3
+    dupl:
+      threshold: 200
+    goconst:
+      min-len: 2
+      min-occurrences: 3
+    gocyclo:
+      min-complexity: 42
+    govet:
+      enable:
+        - shadow
+    tagliatelle:
+      case:
+        rules:
+          json: snake
+          yaml: snake
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - .*_test\.go$
+      - test
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - gofumpt
+    - goimports
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/tbmatuka/websocket-notify)
+      custom-order: true
+  exclusions:
+    generated: lax
+    paths:
+      - .*_test\.go$
+      - test
+      - third_party$
+      - builtin$
+      - examples$

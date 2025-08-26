@@ -3,6 +3,7 @@ package websocket_notify
 import (
 	"log"
 	"os"
+	"regexp"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -28,6 +29,8 @@ type Config struct {
 
 	ApiSecret string
 	WsSecret  string
+
+	Debug bool
 }
 
 type YamlConfig struct {
@@ -47,6 +50,8 @@ type YamlConfig struct {
 
 	ApiSecret string `yaml:"api_secret"`
 	WsSecret  string `yaml:"websocket_secret"`
+
+	Debug bool `yaml:"debug"`
 }
 
 func loadConfig(cmd *cobra.Command) Config {
@@ -79,6 +84,8 @@ func loadConfig(cmd *cobra.Command) Config {
 	config.WsListen.Port = getValueInt(cmd, `ws-port`, `WS_PORT`, yamlConfig.WsListen.Port)
 	config.WsListen.SSLCert = getValue(cmd, `ws-ssl-cert`, `WS_SSL_CERT`, yamlConfig.WsListen.SSLCert)
 	config.WsListen.SSLKey = getValue(cmd, `ws-ssl-key`, `WS_SSL_KEY`, yamlConfig.WsListen.SSLKey)
+
+	config.Debug = getValueBool(cmd, `debug`, `DEBUG`, yamlConfig.Debug)
 
 	config.CheckSSL()
 
@@ -115,6 +122,22 @@ func getValueInt(cmd *cobra.Command, cmdFlag string, envName string, yamlValue u
 
 	if cmd.Flags().Changed(cmdFlag) {
 		value, _ = cmd.Flags().GetUint16(cmdFlag)
+	}
+
+	return value
+}
+
+func getValueBool(cmd *cobra.Command, cmdFlag string, envName string, yamlValue bool) bool {
+	value := yamlValue
+
+	envValue, envOk := os.LookupEnv(`WEBSOCKET_NOTIFY_` + envName)
+	if envOk {
+		regex := regexp.MustCompile(`^y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF$`)
+		value = regex.MatchString(envValue)
+	}
+
+	if cmd.Flags().Changed(cmdFlag) {
+		value, _ = cmd.Flags().GetBool(cmdFlag)
 	}
 
 	return value

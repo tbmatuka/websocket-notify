@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 	"sync"
 
@@ -129,6 +130,7 @@ func (manager *SubscriptionManager) subscribeToTags(connection *SocketConnection
 			manager.tags[tagName] = make(map[uint]*SocketConnection)
 		}
 
+		logger.Debug(fmt.Sprintf(`Adding connection %d to tag %s`, connection.Id, tagName))
 		manager.tags[tagName][uint(len(manager.tags[tagName]))] = connection
 		connection.Tags[tagName] = true
 	}
@@ -144,8 +146,10 @@ func (manager *SubscriptionManager) unsubscribeFromTags(connection *SocketConnec
 		} else {
 			for index, tagConnection := range manager.tags[tagName] {
 				if tagConnection == connection {
-					manager.tags[tagName][index] = manager.tags[tagName][uint(len(manager.tags[tagName])-1)]
-					delete(manager.tags[tagName], uint(len(manager.tags[tagName])-1))
+					logger.Debug(fmt.Sprintf(`Removing connection %d from tag %s`, connection.Id, tagName))
+
+					manager.tags[tagName][index] = manager.tags[tagName][uint(len(manager.tags[tagName]))-1]
+					delete(manager.tags[tagName], uint(len(manager.tags[tagName]))-1)
 
 					break
 				}
@@ -163,23 +167,28 @@ func (manager *SubscriptionManager) addConnection(connection *SocketConnection) 
 	connection.Id = uint(len(manager.connections))
 	connection.Managed = true
 	manager.connections[connection.Id] = connection
+
+	logger.Debug(fmt.Sprintf(`Added connection %d`, connection.Id))
 }
 
 func (manager *SubscriptionManager) removeConnection(connection *SocketConnection) {
 	manager.connectionsMutex.Lock()
 	defer manager.connectionsMutex.Unlock()
 
-	lastConnectionId := uint(len(manager.connections) - 1)
+	lastConnectionId := uint(len(manager.connections)) - 1
 
-	if connection.Id == lastConnectionId {
-		delete(manager.connections, connection.Id)
-	} else {
+	logger.Debug(fmt.Sprintf(`Removing connection %d`, connection.Id))
+
+	if connection.Id != lastConnectionId {
+		logger.Debug(fmt.Sprintf(`Swapping connection %d with %d`, connection.Id, lastConnectionId))
 		lastConnection := manager.connections[lastConnectionId]
 		lastConnection.Id = connection.Id
 
 		manager.connections[connection.Id] = lastConnection
-		delete(manager.connections, lastConnection.Id)
 	}
+
+	delete(manager.connections, lastConnectionId)
+	logger.Debug(fmt.Sprintf(`Removed connection %d`, lastConnectionId))
 
 	connection.Id = uint(0)
 	connection.Managed = false

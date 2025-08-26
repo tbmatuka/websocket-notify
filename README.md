@@ -44,6 +44,7 @@ websocket:
     ssl_cert: /path/to/ssl.crt
     ssl_key: /path/to/ssl.key
 
+debug: true
 ```
 
 ## Environment variables
@@ -61,4 +62,6 @@ WEBSOCKET_NOTIFY_WS_HOST="0.0.0.0"
 WEBSOCKET_NOTIFY_WS_PORT="8001"
 WEBSOCKET_NOTIFY_WS_SSL_CERT=""
 WEBSOCKET_NOTIFY_WS_SSL_KEY=""
+
+WEBSOCKET_NOTIFY_DEBUG="true"
 ```

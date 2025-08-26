@@ -23,6 +23,8 @@ func Execute() {
 	rootCmd.PersistentFlags().String(`ws-ssl-cert`, ``, `WebSocket SSL certificate path`)
 	rootCmd.PersistentFlags().String(`ws-ssl-key`, ``, `WebSocket SSL certificate key path`)
 
+	rootCmd.PersistentFlags().BoolP(`debug`, `d`, false, `enable debug mode`)
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
